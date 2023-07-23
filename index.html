@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./assets/images/favicon-32x32.png"
+    />
+
+    <title>Frontend Mentor | Age calculator app</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="bg-off-white h-full w-full text-xl px-3 py-4 lg:flex lg:items-center lg:justify-center">
+    <div
+      class="flex flex-col w-full bg-white px-4 py-12 rounded-2xl rounded-br-[5rem] lg:max-w-[840px] lg:px-12 lg:pr-64"
+    >
+      <ul class="flex w-full gap-2 lg:gap-8">
+        <li>
+          <p
+            class="text-smokey-grey text-xs uppercase tracking-widest"
+            id="label-day"
+          >
+            Day
+          </p>
+          <input
+            class="w-full outline-smokey-grey border border-light-grey rounded-lg px-2 py-2 mt-1 focus:outline-purple"
+            type="text"
+            name="day"
+            id="input-day"
+            placeholder="DD"
+          />
+          <span class="text-[8px] italic text-light-red" id="error-day"></span>
+        </li>
+        <li>
+          <p
+            class="text-smokey-grey text-xs uppercase tracking-widest"
+            id="label-month"
+          >
+            Month
+          </p>
+          <input
+            class="w-full outline-smokey-grey border border-light-grey rounded-lg px-2 py-2 mt-1 focus:outline-purple"
+            type="text"
+            name="day"
+            id="input-month"
+            placeholder="MM"
+          />
+          <span
+            class="text-[8px] italic text-light-red"
+            id="error-month"
+          ></span>
+        </li>
+        <li>
+          <p
+            class="text-smokey-grey text-xs uppercase tracking-widest"
+            id="label-year"
+          >
+            Year
+          </p>
+          <input
+            class="w-full outline-smokey-grey border border-light-grey rounded-lg px-2 py-2 mt-1 focus:outline-purple"
+            type="text"
+            name="day"
+            id="input-year"
+            placeholder="YYYY"
+          />
+          <span class="text-[8px] italic text-light-red" id="error-year"></span>
+        </li>
+      </ul>
+      <div class="flex justify-center align-center my-6 lg:justify-end">
+        <div
+          class="z-0 absolute h-[1px] left-8 right-8 bg-light-grey mt-7 lg:max-w-[744px] lg:mx-auto"
+        ></div>
+        <img
+          id="button-arrow"
+          class="z-10 w-14 h-14 bg-purple active:bg-off-black rounded-full p-4 cursor-pointer lg:relative lg:left-40"
+          src="./assets/images/icon-arrow.svg"
+          alt=""
+        />
+      </div>
+      <div class="flex flex-col gap-2">
+        <h1 class="text-5xl italic font-bold lg:text-8xl">
+          <span class="text-purple pr-2" id="age-years">--</span>years
+        </h1>
+        <h1 class="text-5xl italic font-bold lg:text-8xl">
+          <span class="text-purple pr-2" id="age-months">--</span>months
+        </h1>
+        <h1 class="text-5xl italic font-bold lg:text-8xl">
+          <span class="text-purple pr-2" id="age-days">--</span>days
+        </h1>
+      </div>
+    </div>
+    <div class="attribution text-sm absolute bottom-0">
+      Challenge by
+      <a
+        class="text-purple"
+        href="https://www.frontendmentor.io?ref=challenge"
+        target="_blank"
+        >Frontend Mentor</a
+      >. Coded by
+      <a class="text-purple" href="https://github.com/naseemshehidi"
+        >Mohamed Nassime Chehidi</a
+      >.
+    </div>
+    <script>
+      const buttonArrow = document.getElementById("button-arrow");
+      const inputDay = document.getElementById("input-day");
+      const inputMonth = document.getElementById("input-month");
+      const inputYear = document.getElementById("input-year");
+
+      const errorDay = document.getElementById("error-day");
+      const errorMonth = document.getElementById("error-month");
+      const errorYear = document.getElementById("error-year");
+
+      const ageYears = document.getElementById("age-years");
+      const ageMonths = document.getElementById("age-months");
+      const ageDays = document.getElementById("age-days");
+
+      const labelDay = document.getElementById("label-day");
+      const labelMonth = document.getElementById("label-month");
+      const labelYear = document.getElementById("label-year");
+
+      const inputs = document.querySelectorAll('input[type="text"]');
+
+      inputs.forEach(input => {
+        input.addEventListener("keydown", event => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            buttonArrow.click();
+          }
+        });
+      });
+
+      buttonArrow.addEventListener("click", () => {
+        const isValid = validateDate(
+          inputDay.value,
+          inputMonth.value,
+          inputYear.value
+        );
+        if (isValid) {
+          calculate(inputDay.value, inputMonth.value, inputYear.value);
+        } else {
+          ageYears.innerHTML = "--";
+          ageMonths.innerHTML = "--";
+          ageDays.innerHTML = "--";
+        }
+      });
+
+      function calculate(day, month, year) {
+        const currentDate = new Date();
+        const date = new Date(year, month, day);
+
+        const diff = currentDate - date;
+
+        const diffInYears = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+  const diffInMonths = Math.floor(diff / (1000 * 60 * 60 * 24 * 30)) % 12;
+  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24)) % 30;
+
+        if (diff < 0) {
+          ageYears.innerHTML = "--";
+          ageMonths.innerHTML = "--";
+          ageDays.innerHTML = "--";
+          displayError("year", "Must be in the past");
+          displayError("month", "");
+          displayError("day", "");
+        } else {
+          ageYears.innerHTML = diffInYears;
+          ageMonths.innerHTML = diffInMonths;
+          ageDays.innerHTML = diffInDays;
+        }
+      }
+
+      function errorOutline(time) {
+        switch (time) {
+          case "day":
+            labelDay.classList.add("text-light-red");
+            inputDay.classList.add("border-light-red");
+            break;
+          case "month":
+            labelMonth.classList.add("text-light-red");
+            inputMonth.classList.add("border-light-red");
+            break;
+          case "year":
+            labelYear.classList.add("text-light-red");
+            inputYear.classList.add("border-light-red");
+            break;
+        }
+      }
+
+      function displayError(time, message) {
+        switch (time) {
+          case "day":
+            errorDay.innerHTML = message;
+            break;
+          case "month":
+            errorMonth.innerHTML = message;
+            break;
+          case "year":
+            errorYear.innerHTML = message;
+            break;
+        }
+        errorOutline(time);
+      }
+
+      function clearError(time) {
+        switch (time) {
+          case "day":
+            errorDay.innerHTML = "";
+            labelDay.classList.remove("text-light-red");
+            inputDay.classList.remove("border-light-red");
+            break;
+          case "month":
+            errorMonth.innerHTML = "";
+            labelMonth.classList.remove("text-light-red");
+            inputMonth.classList.remove("border-light-red");
+            break;
+          case "year":
+            errorYear.innerHTML = "";
+            labelYear.classList.remove("text-light-red");
+            inputYear.classList.remove("border-light-red");
+            break;
+        }
+      }
+
+      function validateDate(day, month, year) {
+        // get current date
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth();
+        const currentDay = currentDate.getDate();
+
+        let yearValid = false;
+        let monthValid = false;
+        let dayValid = false;
+
+        // validate year
+        if (year == "") {
+          displayError("year", "This field is required");
+        } else if (year > currentYear) {
+          displayError("year", "Must be in the past");
+        } else {
+          clearError("year");
+          yearValid = true;
+        }
+
+        // validate month
+        if (month == "") {
+          displayError("month", "This field is required");
+        } else if (month > 12 || month < 1) {
+          displayError("month", "Must be a valid month");
+        } else {
+          clearError("month");
+          monthValid = true;
+        }
+
+        // validate day
+        if (day == "") {
+          displayError("day", "This field is required");
+        } else if (day > 31 || day < 1) {
+          displayError("day", "Must be a valid day");
+        } else {
+          clearError("day");
+          dayValid = true;
+        }
+
+        if (yearValid && monthValid && dayValid) {
+          const date = new Date(year, month, day);
+          if (date instanceof Date && !isNaN(date)) {
+            clearError("day");
+            clearError("month");
+            clearError("year");
+            return true;
+          } else {
+            displayError("day", "Must be a valid date");
+            errorOutline("month");
+            errorOutline("year");
+          }
+        }
+        return false;
+      }
+    </script>
+  </body>
+</html>
