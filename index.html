@@ -14,9 +14,11 @@
 
     <title>Frontend Mentor | Age calculator app</title>
     
-    <link rel="stylesheet" href="assets/index-e8d9f42c.css">
+    <link rel="stylesheet" href="/assets/index-e8d9f42c.css">
   </head>
-  <body class="bg-off-white h-full w-full text-xl px-3 py-4 lg:flex lg:items-center lg:justify-center">
+  <body
+    class="bg-off-white h-full w-full text-xl px-3 py-4 lg:flex lg:items-center lg:justify-center"
+  >
     <div
       class="flex flex-col w-full bg-white px-4 py-12 rounded-2xl rounded-br-[5rem] lg:max-w-[840px] lg:px-12 lg:pr-64"
     >
@@ -80,7 +82,7 @@
         <img
           id="button-arrow"
           class="z-10 w-14 h-14 bg-purple active:bg-off-black rounded-full p-4 cursor-pointer lg:relative lg:left-40"
-          src="assets/icon-arrow-ca520b94.svg"
+          src="/assets/icon-arrow-ca520b94.svg"
           alt=""
         />
       </div>
@@ -128,8 +130,8 @@
 
       const inputs = document.querySelectorAll('input[type="text"]');
 
-      inputs.forEach(input => {
-        input.addEventListener("keydown", event => {
+      inputs.forEach((input) => {
+        input.addEventListener("keydown", (event) => {
           if (event.key === "Enter") {
             event.preventDefault();
             buttonArrow.click();
@@ -153,27 +155,29 @@
       });
 
       function calculate(day, month, year) {
-        const currentDate = new Date();
-        const date = new Date(year, month, day);
 
-        const diff = currentDate - date;
+        var date = new Date();
+        var d2 = date.getDate();
+        var m2 = 1 + date.getMonth();
+        var y2 = date.getFullYear();
+        var m = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-        const diffInYears = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
-  const diffInMonths = Math.floor(diff / (1000 * 60 * 60 * 24 * 30)) % 12;
-  const diffInDays = Math.floor(diff / (1000 * 60 * 60 * 24)) % 30;
-
-        if (diff < 0) {
-          ageYears.innerHTML = "--";
-          ageMonths.innerHTML = "--";
-          ageDays.innerHTML = "--";
-          displayError("year", "Must be in the past");
-          displayError("month", "");
-          displayError("day", "");
-        } else {
-          ageYears.innerHTML = diffInYears;
-          ageMonths.innerHTML = diffInMonths;
-          ageDays.innerHTML = diffInDays;
+        if (day > d2) {
+          d2 = d2 + m[m2 - 1];
+          m2 = m2 - 1;
         }
+        if (month > m2) {
+          m2 = m2 + 12;
+          y2 = y2 - 1;
+        }
+        var d = d2 - day;
+        var m = m2 - month;
+        var y = y2 - year;
+
+
+        ageYears.innerHTML = y;
+        ageMonths.innerHTML = m;
+        ageDays.innerHTML = d;
       }
 
       function errorOutline(time) {
